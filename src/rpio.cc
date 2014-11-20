@@ -113,6 +113,117 @@ Handle<Value> Write(const Arguments& args)
 }
 
 /*
+ * SPI data mode
+ */
+Handle<Value> spiDataMode(const Arguments& args)
+{
+	HandleScope scope;
+
+	if (args.Length() != 1) {
+		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
+		return scope.Close(Undefined());
+	}
+
+	if (!args[0]->IsInt32()) {
+		ThrowException(Exception::TypeError(String::New("Incorrect argument type(s)")));
+		return scope.Close(Undefined());
+	}
+
+	bcm2835_spi_setDataMode((u_int8) args[0]->toInteger()->Value());
+
+	return scope.Close(Integer::New(0));
+}
+
+/*
+ * SPI bi-directional transfer
+ */
+Handle<Value> spiTransfer(const Arguments& args) {
+	HandleScope scope;
+
+	if (args.Length() != 2) {
+		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
+		return scope.Close(Undefined());
+	}
+
+	if (!args[0]->IsObject() || !args[1]->IsInt32()) {
+		ThrowException(Exception::TypeError(String::New("Incorrect argument type(s)")));
+		return scope.Close(Undefined());
+	}
+
+	// writebuf, readcount
+  uint32_t readcount = args[1]->ToUint32()->Value();
+    
+  size_t writelen;
+  char* writedata;
+  char* readdata;
+  if (args[0]->IsObject()) {
+		Local<Object> writebuf = args[0]->ToObject();
+    writedata = node::Buffer::Data(writebuf);
+  } else {
+    writelen = 0;
+    writedata = NULL;
+    return scope.Close(Undefined());
+  }
+  
+  bcm2835_spi_transfernb(writedata, readdata, readcount);
+  
+  Local<Value> d;
+  node::Buffer* b = node::Buffer::New(readdata, readcount);     
+  Local<Object> globalObj = Context::GetCurrent()->Global();
+  Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(String::New("Buffer")));  
+ 	Handle<Value> v[] = {b->handle_, Integer::New(readcount), Integer::New(0)};
+  d = bufferConstructor->NewInstance(3, v);
+  
+  delete writedata;
+  delete readdata;
+
+	return scope.Close(d);
+}
+/*
+ * SPI bit order
+ */
+Handle<Value> spiBitOrder(const Arguments& args)
+{
+	HandleScope scope;
+
+	if (args.Length() != 1) {
+		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
+		return scope.Close(Undefined());
+	}
+
+	if (!args[0]->IsInt32()) {
+		ThrowException(Exception::TypeError(String::New("Incorrect argument type(s)")));
+		return scope.Close(Undefined());
+	}
+
+	bcm2835_spi_setBitOrder((u_int8) args[0]->toInteger()->Value());
+
+	return scope.Close(Integer::New(0));
+}
+
+/*
+ * SPI clock divider selection
+ */
+Handle<Value> spiClockSpeedDivider(const Arguments& args)
+{
+	HandleScope scope;
+
+	if (args.Length() != 1) {
+		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
+		return scope.Close(Undefined());
+	}
+
+	if (!args[0]->IsInt32()) {
+		ThrowException(Exception::TypeError(String::New("Incorrect argument type(s)")));
+		return scope.Close(Undefined());
+	}
+
+	bcm2835_spi_setClockDivider((u_int16) args[0]->toInteger()->Value());
+
+	return scope.Close(Integer::New(0));
+}
+
+/*
  * Initialize the bcm2835 interface and check we have permission to access it.
  */
 Handle<Value> Start(const Arguments& args)
@@ -129,6 +240,7 @@ Handle<Value> Start(const Arguments& args)
 		return scope.Close(Undefined());
 	}
 
+  bcm2835_spi_chipSelect(BCM2835_SPI_CS_NONE);
 	return scope.Close(Undefined());
 }
 
@@ -148,6 +260,18 @@ void init(Handle<Object> target)
 	    FunctionTemplate::New(Read)->GetFunction());
 
 	target->Set(String::NewSymbol("write"),
+	    FunctionTemplate::New(Write)->GetFunction());
+
+	target->Set(String::NewSymbol("spiDataMode"),
+	    FunctionTemplate::New(SetInput)->GetFunction());
+
+	target->Set(String::NewSymbol("spiTransfer"),
+	    FunctionTemplate::New(SetOutput)->GetFunction());
+
+	target->Set(String::NewSymbol("spiBitOrder"),
+	    FunctionTemplate::New(Read)->GetFunction());
+
+	target->Set(String::NewSymbol("spiClockSpeedDivider"),
 	    FunctionTemplate::New(Write)->GetFunction());
 }
 
