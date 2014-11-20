@@ -161,7 +161,7 @@ Handle<Value> spiDataMode(const Arguments& args)
 Handle<Value> spiTransfer(const Arguments& args) {
 	HandleScope scope;
 #ifdef __arm__
-	if (args.Length() != 4) {
+	if (args.Length() >= 2) {
     ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
     return scope.Close(Undefined());
   }
