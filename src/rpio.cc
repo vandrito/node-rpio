@@ -15,6 +15,9 @@
  */
 
 #include <unistd.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 
 #include <node.h>
 #include <node_buffer.h>
@@ -158,49 +161,51 @@ Handle<Value> spiDataMode(const Arguments& args)
 Handle<Value> spiTransfer(const Arguments& args) {
 	HandleScope scope;
 #ifdef __arm__
-	if (args.Length() != 2) {
-		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
-		return scope.Close(Undefined());
-	}
+        if (args.Length() != 2) {
+                ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
+                return scope.Close(Undefined());
+        }
 
-	if (!args[0]->IsObject() || !args[1]->IsInt32()) {
-		ThrowException(Exception::TypeError(String::New("Incorrect argument type(s)")));
-		return scope.Close(Undefined());
-	}
+        if (!args[0]->IsObject() || !args[1]->IsInt32()) {
+                ThrowException(Exception::TypeError(String::New("Incorrect argument type(s)")));
+                return scope.Close(Undefined());
+        }
 
-	// writebuf, readcount
+        // writebuf, readcount
   uint32_t readcount = args[1]->ToUint32()->Value();
-    
-  char* writedata;
-  char* readdata;
-
-  writedata = NULL;
-  readdata = NULL;
+  uint8_t writedata[readcount];
+  uint8_t readdata[readcount];
+  char* buf;
 
   if (args[0]->IsObject()) {
-		Local<Object> writebuf = args[0]->ToObject();
-    writedata = node::Buffer::Data(writebuf);
+    Local<Object> writebuf = args[0]->ToObject();
+    buf = node::Buffer::Data(writebuf);
+    memcpy(writedata, buf, readcount);
   } else {
     return scope.Close(Undefined());
   }
-  
-  bcm2835_spi_transfernb(writedata, readdata, readcount);
-  
-  Local<Value> d;
-  node::Buffer* b = node::Buffer::New(readdata, readcount);     
-  Local<Object> globalObj = Context::GetCurrent()->Global();
-  Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(String::New("Buffer")));  
- 	Handle<Value> v[] = {b->handle_, Integer::New(readcount), Integer::New(0)};
-  d = bufferConstructor->NewInstance(3, v);
-  
-  delete writedata;
-  delete readdata;
 
-	return scope.Close(d);
+  
+  bcm2835_spi_chipSelect(BCM2835_SPI_CS_NONE);
+  bcm2835_spi_begin();
+  bcm2835_spi_transfernb((char*)writedata, (char*)readdata, readcount);
+  bcm2835_spi_end();
+  if (sizeof(readdata) > 0) {
+    Local<Value> d;
+    node::Buffer* b = node::Buffer::New((char*)readdata, readcount);     
+    Local<Object> globalObj = Context::GetCurrent()->Global();
+    Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(String::New("Buffer")));  
+    Handle<Value> v[] = {b->handle_, Integer::New(readcount), Integer::New(0)};
+    d = bufferConstructor->NewInstance(3, v);
+    return scope.Close(d);
+  } else {
+    return scope.Close(Undefined());
+  } 
 #else
-	return scope.Close(Undefined());
+        return scope.Close(Undefined());
 #endif
 }
+
 /*
  * SPI bit order
  */
