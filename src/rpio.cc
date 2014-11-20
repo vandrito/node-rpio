@@ -188,8 +188,9 @@ Handle<Value> spiTransfer(const Arguments& args) {
   	Local<Array> pins = Array::Cast(*args[3]);
 		int len = pins->Length();
 		for (int i = 0; i < len; i++) {
-			uint8_t pin = (uint8_t)pins->Get(Integer::New(i))->ToObject()->Get(0)->ToInteger()->Value();
-			uint8_t val = (uint8_t)pins->Get(Integer::New(i))->ToObject()->Get(1)->ToInteger()->Value();
+			Local<Object> one = pins->Get(Integer::New(i))->ToObject();
+			uint8_t pin = (uint8_t)one->GetRealNamedProperty('pin')->ToInteger()->Value();
+			uint8_t val = (uint8_t)one->GetRealNamedProperty('value')->ToInteger()->Value();
 			bcm2835_gpio_write(pin, val);
 		}
   }  
