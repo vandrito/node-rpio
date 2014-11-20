@@ -161,7 +161,7 @@ Handle<Value> spiDataMode(const Arguments& args)
 Handle<Value> spiTransfer(const Arguments& args) {
 	HandleScope scope;
 #ifdef __arm__
-	if (args.Length() != 3) {
+	if (args.Length() != 4) {
     ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
     return scope.Close(Undefined());
   }
@@ -184,25 +184,23 @@ Handle<Value> spiTransfer(const Arguments& args) {
     return scope.Close(Undefined());
   }
 
-	Local<Array> pins;
-	int len = 0;
-  if (args[2]->IsObject()) {
-  	pins = Array::Cast(*args[2]);
-		len = pins->Length();
+  if (!args[2]->IsUndefined()) {
+  	Local<Array> pins = Array::Cast(*args[2]);
+		int len = pins->Length();
 		for (int i = 0; i < len; i++) {
-			bcm2835_gpio_write((uint8_t)pins->Get(Integer::New(i))->ToInteger()->Value(), 0);
+			uint8_t pin = (uint8_t)pins->Get(Integer::New(i))->ToObject()->Get(0)->ToInteger()->Value();
+			uint8_t val = (uint8_t)pins->Get(Integer::New(i))->ToObject()->Get(1)->ToInteger()->Value();
+			bcm2835_gpio_write(pin, val);
 		}
   }  
-
+  bcm2835_gpio_write(args[2]->ToInteger()->Value(), 0);
   bcm2835_spi_begin();
   bcm2835_spi_transfernb((char*)writedata, (char*)readdata, readcount);
   bcm2835_spi_end();
 
-  if (args[2]->IsObject()) {
-		for (int i = 0; i < len; i++) {
-			bcm2835_gpio_write((uint8_t)pins->Get(Integer::New(i))->ToInteger()->Value(), 1);
-		}
-  }  
+	if (!args[2]->IsUndefined()) {
+  	bcm2835_gpio_write(args[2]->ToInteger()->Value(), 1);
+	}
 
   if (sizeof(readdata) > 0) {
     Local<Value> d;
