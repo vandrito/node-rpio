@@ -189,7 +189,7 @@ Handle<Value> spiTransfer(const Arguments& args) {
   if (args[2]->IsObject()) {
   	pins = Array::Cast(*args[2]);
 		len = pins->Length();
-		for (i = 0; i < len; i++) {
+		for (int i = 0; i < len; i++) {
 			bcm2835_gpio_write(pins->Get(Integer::New(i))->ToInteger()), 0);
 		}
   }  
@@ -199,7 +199,7 @@ Handle<Value> spiTransfer(const Arguments& args) {
   bcm2835_spi_end();
 
   if (args[2]->IsObject()) {
-		for (i = 0; i < len; i++) {
+		for (int i = 0; i < len; i++) {
 			bcm2835_gpio_write(pins->Get(Integer::New(i))->ToInteger()), 1);
 		}
   }  
