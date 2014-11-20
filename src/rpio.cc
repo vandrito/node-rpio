@@ -186,14 +186,15 @@ Handle<Value> spiTransfer(const Arguments& args) {
 
   if (!args[2]->IsUndefined()) {
     Handle<Array> pins = Handle<Array>::Cast(args[3]);
-		for (int i = 0; i < pins->Length(); i++) {
+		for (unsigned int i = 0; i < pins->Length(); i++) {
 			Local<Object> one = pins->Get(Integer::New(i))->ToObject();
 			uint8_t pin = (uint8_t)one->Get(String::New("pin"))->ToInteger()->Value();
 			uint8_t val = (uint8_t)one->Get(String::New("value"))->ToInteger()->Value();
 			bcm2835_gpio_write(pin, val);
 		}
+
+  	bcm2835_gpio_write(args[2]->ToInteger()->Value(), 0);
   }  
-  bcm2835_gpio_write(args[2]->ToInteger()->Value(), 0);
   bcm2835_spi_begin();
   bcm2835_spi_transfernb((char*)writedata, (char*)readdata, readcount);
   bcm2835_spi_end();
