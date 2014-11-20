@@ -234,7 +234,6 @@ Handle<Value> spiClockSpeedDivider(const Arguments& args)
 	HandleScope scope;
 #ifdef __arm__
 	if (args.Length() != 1) {
-		printf("Incorrect number of arguments: %d", args.Length());
 		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
 		return scope.Close(Undefined());
 	}
@@ -295,16 +294,16 @@ void init(Handle<Object> target)
 	    FunctionTemplate::New(Write)->GetFunction());
 
 	target->Set(String::NewSymbol("spiDataMode"),
-	    FunctionTemplate::New(SetInput)->GetFunction());
+	    FunctionTemplate::New(spiDataMode)->GetFunction());
 
 	target->Set(String::NewSymbol("spiTransfer"),
-	    FunctionTemplate::New(SetOutput)->GetFunction());
+	    FunctionTemplate::New(spiTransfer)->GetFunction());
 
 	target->Set(String::NewSymbol("spiBitOrder"),
-	    FunctionTemplate::New(Read)->GetFunction());
+	    FunctionTemplate::New(spiBitOrder)->GetFunction());
 
 	target->Set(String::NewSymbol("spiClockSpeedDivider"),
-	    FunctionTemplate::New(Write)->GetFunction());
+	    FunctionTemplate::New(spiClockSpeedDivider)->GetFunction());
 }
 
 NODE_MODULE(rpio, init)
