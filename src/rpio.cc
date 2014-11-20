@@ -175,6 +175,7 @@ Handle<Value> spiTransfer(const Arguments& args) {
   char* readdata;
 
   writedata = NULL;
+  readdata = NULL;
 
   if (args[0]->IsObject()) {
 		Local<Object> writebuf = args[0]->ToObject();
