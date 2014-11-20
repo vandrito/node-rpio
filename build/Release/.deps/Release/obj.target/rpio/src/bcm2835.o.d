@@ -1,3 +1,0 @@
-cmd_Release/obj.target/rpio/src/bcm2835.o := g++ '-D_LARGEFILE_SOURCE' '-D_FILE_OFFSET_BITS=64' '-DBUILDING_NODE_EXTENSION' -I/home/vandrito/.node-gyp/0.10.28/src -I/home/vandrito/.node-gyp/0.10.28/deps/uv/include -I/home/vandrito/.node-gyp/0.10.28/deps/v8/include  -fPIC -Wall -Wextra -Wno-unused-parameter -pthread -m64 -O2 -fno-strict-aliasing -fno-tree-vrp -fno-omit-frame-pointer -fno-rtti -fno-exceptions -MMD -MF ./Release/.deps/Release/obj.target/rpio/src/bcm2835.o.d.raw  -c -o Release/obj.target/rpio/src/bcm2835.o ../src/bcm2835.cc
-Release/obj.target/rpio/src/bcm2835.o: ../src/bcm2835.cc
-../src/bcm2835.cc:
