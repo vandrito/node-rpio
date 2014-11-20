@@ -185,7 +185,7 @@ Handle<Value> spiTransfer(const Arguments& args) {
   }
 
   if (!args[2]->IsUndefined()) {
-  	Local<Array> pins = Array::Cast(*args[2]);
+  	Local<Array> pins = Array::Cast(*args[3]);
 		int len = pins->Length();
 		for (int i = 0; i < len; i++) {
 			uint8_t pin = (uint8_t)pins->Get(Integer::New(i))->ToObject()->Get(0)->ToInteger()->Value();
