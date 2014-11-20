@@ -171,15 +171,15 @@ Handle<Value> spiTransfer(const Arguments& args) {
 	// writebuf, readcount
   uint32_t readcount = args[1]->ToUint32()->Value();
     
-  size_t writelen;
   char* writedata;
   char* readdata;
+
+  writedata = NULL;
+
   if (args[0]->IsObject()) {
 		Local<Object> writebuf = args[0]->ToObject();
     writedata = node::Buffer::Data(writebuf);
   } else {
-    writelen = 0;
-    writedata = NULL;
     return scope.Close(Undefined());
   }
   
