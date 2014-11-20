@@ -144,7 +144,7 @@ Handle<Value> spiDataMode(const Arguments& args)
 		return scope.Close(Undefined());
 	}
 
-	bcm2835_spi_setDataMode((uint8_t) args[0]->toInteger()->Value());
+	bcm2835_spi_setDataMode((uint8_t) args[0]->ToInteger()->Value());
 
 	return scope.Close(Integer::New(0));
 #else
@@ -217,7 +217,7 @@ Handle<Value> spiBitOrder(const Arguments& args)
 		return scope.Close(Undefined());
 	}
 
-	bcm2835_spi_setBitOrder((uint8_t) args[0]->toInteger()->Value());
+	bcm2835_spi_setBitOrder((uint8_t) args[0]->ToInteger()->Value());
 
 	return scope.Close(Integer::New(0));
 #else
@@ -242,7 +242,7 @@ Handle<Value> spiClockSpeedDivider(const Arguments& args)
 		return scope.Close(Undefined());
 	}
 
-	bcm2835_spi_setClockDivider((u_int16) args[0]->toInteger()->Value());
+	bcm2835_spi_setClockDivider((uint16_t) args[0]->ToInteger()->Value());
 
 	return scope.Close(Integer::New(0));
 #else
