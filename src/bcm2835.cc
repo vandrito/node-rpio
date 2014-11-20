@@ -18,7 +18,7 @@
 #include <time.h>
 #include <unistd.h>
 
-
+#ifdef __arm__
 #include "bcm2835.h"
 
 // This define enables a little test program (by default a blinking output on pin RPI_GPIO_PIN_11)
@@ -1322,5 +1322,5 @@ int main(int argc, char **argv)
 }
 #endif
 
-
+#endif
 

@@ -792,6 +792,7 @@ typedef enum
 #define delayMicroseconds(x) bcm2835_delayMicroseconds(x)
 #endif
 
+#ifdef __arm__
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -1296,7 +1297,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
+#endif // check ARM
 #endif // BCM2835_H
 
 /// @example blink.c

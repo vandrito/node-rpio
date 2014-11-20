@@ -29,7 +29,7 @@ using namespace v8;
 Handle<Value> SetInput(const Arguments& args)
 {
 	HandleScope scope;
-
+#ifdef __arm__
 	if (args.Length() != 1) {
 		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
 		return scope.Close(Undefined());
@@ -43,6 +43,9 @@ Handle<Value> SetInput(const Arguments& args)
 	bcm2835_gpio_fsel(args[0]->NumberValue(), BCM2835_GPIO_FSEL_INPT);
 
 	return scope.Close(Integer::New(0));
+#else
+	return scope.Close(Undefined());
+#endif
 }
 
 /*
@@ -51,7 +54,7 @@ Handle<Value> SetInput(const Arguments& args)
 Handle<Value> SetOutput(const Arguments& args)
 {
 	HandleScope scope;
-
+#ifdef __arm__
 	if (args.Length() != 1) {
 		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
 		return scope.Close(Undefined());
@@ -65,6 +68,9 @@ Handle<Value> SetOutput(const Arguments& args)
 	bcm2835_gpio_fsel(args[0]->NumberValue(), BCM2835_GPIO_FSEL_OUTP);
 
 	return scope.Close(Integer::New(0));
+#else
+	return scope.Close(Undefined());
+#endif
 }
 
 /*
@@ -73,6 +79,7 @@ Handle<Value> SetOutput(const Arguments& args)
 Handle<Value> Read(const Arguments& args)
 {
 	HandleScope scope;
+#ifdef __arm__
 	uint8_t value;
 
 	if (args.Length() != 1) {
@@ -88,6 +95,9 @@ Handle<Value> Read(const Arguments& args)
 	value = bcm2835_gpio_lev(args[0]->NumberValue());
 
 	return scope.Close(Integer::New(value));
+#else
+	return scope.Close(Undefined());
+#endif
 }
 
 /*
@@ -96,7 +106,7 @@ Handle<Value> Read(const Arguments& args)
 Handle<Value> Write(const Arguments& args)
 {
 	HandleScope scope;
-
+#ifdef __arm__
 	if (args.Length() != 2) {
 		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
 		return scope.Close(Undefined());
@@ -110,6 +120,9 @@ Handle<Value> Write(const Arguments& args)
 	bcm2835_gpio_write(args[0]->NumberValue(), args[1]->NumberValue());
 
 	return scope.Close(Integer::New(0));
+#else
+	return scope.Close(Undefined());
+#endif
 }
 
 /*
@@ -119,6 +132,7 @@ Handle<Value> spiDataMode(const Arguments& args)
 {
 	HandleScope scope;
 
+#ifdef __arm__
 	if (args.Length() != 1) {
 		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
 		return scope.Close(Undefined());
@@ -132,6 +146,9 @@ Handle<Value> spiDataMode(const Arguments& args)
 	bcm2835_spi_setDataMode((u_int8) args[0]->toInteger()->Value());
 
 	return scope.Close(Integer::New(0));
+#else
+	return scope.Close(Undefined());
+#endif
 }
 
 /*
@@ -139,7 +156,7 @@ Handle<Value> spiDataMode(const Arguments& args)
  */
 Handle<Value> spiTransfer(const Arguments& args) {
 	HandleScope scope;
-
+#ifdef __arm__
 	if (args.Length() != 2) {
 		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
 		return scope.Close(Undefined());
@@ -178,6 +195,9 @@ Handle<Value> spiTransfer(const Arguments& args) {
   delete readdata;
 
 	return scope.Close(d);
+#else
+	return scope.Close(Undefined());
+#endif
 }
 /*
  * SPI bit order
@@ -185,7 +205,7 @@ Handle<Value> spiTransfer(const Arguments& args) {
 Handle<Value> spiBitOrder(const Arguments& args)
 {
 	HandleScope scope;
-
+#ifdef __arm__
 	if (args.Length() != 1) {
 		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
 		return scope.Close(Undefined());
@@ -199,6 +219,9 @@ Handle<Value> spiBitOrder(const Arguments& args)
 	bcm2835_spi_setBitOrder((u_int8) args[0]->toInteger()->Value());
 
 	return scope.Close(Integer::New(0));
+#else
+	return scope.Close(Undefined());
+#endif
 }
 
 /*
@@ -207,7 +230,7 @@ Handle<Value> spiBitOrder(const Arguments& args)
 Handle<Value> spiClockSpeedDivider(const Arguments& args)
 {
 	HandleScope scope;
-
+#ifdef __arm__
 	if (args.Length() != 1) {
 		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
 		return scope.Close(Undefined());
@@ -221,6 +244,9 @@ Handle<Value> spiClockSpeedDivider(const Arguments& args)
 	bcm2835_spi_setClockDivider((u_int16) args[0]->toInteger()->Value());
 
 	return scope.Close(Integer::New(0));
+#else
+	return scope.Close(Undefined());
+#endif
 }
 
 /*
@@ -229,7 +255,7 @@ Handle<Value> spiClockSpeedDivider(const Arguments& args)
 Handle<Value> Start(const Arguments& args)
 {
 	HandleScope scope;
-
+#ifdef __arm__
 	if (geteuid() != 0) {
 		ThrowException(Exception::Error(String::New("You must be root to access GPIO")));
 		return scope.Close(Undefined());
@@ -242,6 +268,9 @@ Handle<Value> Start(const Arguments& args)
 
   bcm2835_spi_chipSelect(BCM2835_SPI_CS_NONE);
 	return scope.Close(Undefined());
+#else
+	return scope.Close(Undefined());
+#endif
 }
 
 void init(Handle<Object> target)
