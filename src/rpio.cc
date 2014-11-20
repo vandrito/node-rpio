@@ -17,6 +17,7 @@
 #include <unistd.h>
 
 #include <node.h>
+#include <node_buffer.h>
 #include <v8.h>
 
 #include "bcm2835.h"
@@ -143,7 +144,7 @@ Handle<Value> spiDataMode(const Arguments& args)
 		return scope.Close(Undefined());
 	}
 
-	bcm2835_spi_setDataMode((u_int8) args[0]->toInteger()->Value());
+	bcm2835_spi_setDataMode((uint8_t) args[0]->toInteger()->Value());
 
 	return scope.Close(Integer::New(0));
 #else
@@ -162,7 +163,7 @@ Handle<Value> spiTransfer(const Arguments& args) {
 		return scope.Close(Undefined());
 	}
 
-	if (!args[0]->IsObject() || !args[1]->IsInt32()) {
+	if (!args[0]->IsObject() || !args[1]->IsInt32()) {
 		ThrowException(Exception::TypeError(String::New("Incorrect argument type(s)")));
 		return scope.Close(Undefined());
 	}
@@ -216,7 +217,7 @@ Handle<Value> spiBitOrder(const Arguments& args)
 		return scope.Close(Undefined());
 	}
 
-	bcm2835_spi_setBitOrder((u_int8) args[0]->toInteger()->Value());
+	bcm2835_spi_setBitOrder((uint8_t) args[0]->toInteger()->Value());
 
 	return scope.Close(Integer::New(0));
 #else
