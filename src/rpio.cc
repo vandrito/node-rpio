@@ -185,9 +185,8 @@ Handle<Value> spiTransfer(const Arguments& args) {
   }
 
   if (!args[2]->IsUndefined()) {
-  	Local<Array> pins = Array::Cast(args[3]);
-		int len = pins->Length();
-		for (int i = 0; i < len; i++) {
+    Handle<Array> pins = Handle<Array>::Cast(arg[0]);
+		for (int i = 0; i < pins->Length(); i++) {
 			Local<Object> one = pins->Get(Integer::New(i))->ToObject();
 			uint8_t pin = (uint8_t)one->GetRealNamedProperty(String::New("pin"))->ToInteger()->Value();
 			uint8_t val = (uint8_t)one->GetRealNamedProperty(String::New("value"))->ToInteger()->Value();
