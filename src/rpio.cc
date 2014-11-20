@@ -161,17 +161,16 @@ Handle<Value> spiDataMode(const Arguments& args)
 Handle<Value> spiTransfer(const Arguments& args) {
 	HandleScope scope;
 #ifdef __arm__
-        if (args.Length() != 2) {
-                ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
-                return scope.Close(Undefined());
-        }
+	if (args.Length() != 6) {
+    ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
+    return scope.Close(Undefined());
+  }
 
-        if (!args[0]->IsObject() || !args[1]->IsInt32()) {
-                ThrowException(Exception::TypeError(String::New("Incorrect argument type(s)")));
-                return scope.Close(Undefined());
-        }
-
-        // writebuf, readcount
+  if (!args[0]->IsObject() || !args[1]->IsInt32()) {
+    ThrowException(Exception::TypeError(String::New("Incorrect argument type(s)")));
+    return scope.Close(Undefined());
+  }
+   
   uint32_t readcount = args[1]->ToUint32()->Value();
   uint8_t writedata[readcount];
   uint8_t readdata[readcount];
@@ -185,11 +184,28 @@ Handle<Value> spiTransfer(const Arguments& args) {
     return scope.Close(Undefined());
   }
 
-  
-  bcm2835_spi_chipSelect(BCM2835_SPI_CS_NONE);
+	Local<Array> pins;
+  if (args[2]->IsObject()) {
+  	pins = Array::Cast(*arg[2]);
+		int len = argv_handle->Length();
+		for (i = 0; i < len; i++) {
+			uint8_t pin = pins->Get(Integer::New(i))->ToInteger());
+			bcm2835_gpio_write(pso->Get('pin')->ToInteger()->Value(), 0);
+		}
+  }  
+
   bcm2835_spi_begin();
   bcm2835_spi_transfernb((char*)writedata, (char*)readdata, readcount);
   bcm2835_spi_end();
+
+  if (args[2]->IsObject()) {
+		int len = argv_handle->Length();
+		for (i = 0; i < len; i++) {
+			uint8_t pin = pins->Get(Integer::New(i))->ToInteger());
+			bcm2835_gpio_write(pso->Get('pin')->ToInteger()->Value(), 1);
+		}
+  }  
+
   if (sizeof(readdata) > 0) {
     Local<Value> d;
     node::Buffer* b = node::Buffer::New((char*)readdata, readcount);     
@@ -199,10 +215,10 @@ Handle<Value> spiTransfer(const Arguments& args) {
     d = bufferConstructor->NewInstance(3, v);
     return scope.Close(d);
   } else {
-    return scope.Close(Undefined());
+		return scope.Close(Undefined());
   } 
 #else
-        return scope.Close(Undefined());
+	return scope.Close(Undefined());
 #endif
 }
 
