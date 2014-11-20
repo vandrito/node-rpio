@@ -32,7 +32,7 @@ Handle<Value> SetInput(const Arguments& args)
 	HandleScope scope;
 #ifdef __arm__
 	if (args.Length() != 1) {
-		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
+		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments: " + args.Length())));
 		return scope.Close(Undefined());
 	}
 
@@ -57,7 +57,7 @@ Handle<Value> SetOutput(const Arguments& args)
 	HandleScope scope;
 #ifdef __arm__
 	if (args.Length() != 1) {
-		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
+		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments: " + args.Length())));
 		return scope.Close(Undefined());
 	}
 
@@ -84,7 +84,7 @@ Handle<Value> Read(const Arguments& args)
 	uint8_t value;
 
 	if (args.Length() != 1) {
-		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
+		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments: " + args.Length())));
 		return scope.Close(Undefined());
 	}
 
@@ -109,7 +109,7 @@ Handle<Value> Write(const Arguments& args)
 	HandleScope scope;
 #ifdef __arm__
 	if (args.Length() != 2) {
-		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
+		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments: " + args.Length())));
 		return scope.Close(Undefined());
 	}
 
@@ -135,7 +135,7 @@ Handle<Value> spiDataMode(const Arguments& args)
 
 #ifdef __arm__
 	if (args.Length() != 1) {
-		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
+		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments: " + args.Length())));
 		return scope.Close(Undefined());
 	}
 
@@ -159,7 +159,7 @@ Handle<Value> spiTransfer(const Arguments& args) {
 	HandleScope scope;
 #ifdef __arm__
 	if (args.Length() != 2) {
-		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
+		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments: " + args.Length())));
 		return scope.Close(Undefined());
 	}
 
@@ -209,7 +209,7 @@ Handle<Value> spiBitOrder(const Arguments& args)
 	HandleScope scope;
 #ifdef __arm__
 	if (args.Length() != 1) {
-		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
+		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments: " + args.Length())));
 		return scope.Close(Undefined());
 	}
 
@@ -234,7 +234,7 @@ Handle<Value> spiClockSpeedDivider(const Arguments& args)
 	HandleScope scope;
 #ifdef __arm__
 	if (args.Length() != 1) {
-		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments")));
+		ThrowException(Exception::TypeError(String::New("Incorrect number of arguments: " + args.Length())));
 		return scope.Close(Undefined());
 	}
 
