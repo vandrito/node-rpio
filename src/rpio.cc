@@ -176,21 +176,19 @@ Handle<Value> spiTransfer(const Arguments& args) {
   uint8_t readdata[readcount];
   char* buf;
 
-  if (args[0]->IsObject()) {
-    Local<Object> writebuf = args[0]->ToObject();
-    buf = node::Buffer::Data(writebuf);
-    memcpy(writedata, buf, readcount);
-  } else {
-    return scope.Close(Undefined());
-  }
+  Local<Object> writebuf = args[0]->ToObject();
+  buf = node::Buffer::Data(writebuf);
+  memcpy(writedata, buf, readcount);
 
   if (!args[2]->IsUndefined()) {
-    Handle<Array> pins = Handle<Array>::Cast(args[3]);
-		for (unsigned int i = 0; i < pins->Length(); i++) {
-			Local<Object> one = pins->Get(Integer::New(i))->ToObject();
-			uint8_t pin = (uint8_t)one->Get(String::New("pin"))->ToInteger()->Value();
-			uint8_t val = (uint8_t)one->Get(String::New("value"))->ToInteger()->Value();
-			bcm2835_gpio_write(pin, val);
+  	if (!args[3]->IsUndefined()) {
+	    Handle<Array> pins = Handle<Array>::Cast(args[3]);
+			for (unsigned int i = 0; i < pins->Length(); i++) {
+				Local<Object> one = pins->Get(Integer::New(i))->ToObject();
+				uint8_t pin = (uint8_t)one->Get(String::New("pin"))->ToInteger()->Value();
+				uint8_t val = (uint8_t)one->Get(String::New("value"))->ToInteger()->Value();
+				bcm2835_gpio_write(pin, val);
+			}
 		}
 
   	bcm2835_gpio_write(args[2]->ToInteger()->Value(), 0);
