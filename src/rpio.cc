@@ -201,7 +201,7 @@ Handle<Value> spiTransfer(const Arguments& args) {
   	bcm2835_gpio_write(args[2]->ToInteger()->Value(), 1);
 	}
 
-  if (sizeof(readdata) > 0) {
+  if (readdata && sizeof(readdata) > 0) {
     Local<Value> d;
     node::Buffer* b = node::Buffer::New((char*)readdata, readcount);     
     Local<Object> globalObj = Context::GetCurrent()->Global();
