@@ -201,17 +201,14 @@ Handle<Value> spiTransfer(const Arguments& args) {
   	bcm2835_gpio_write(args[2]->ToInteger()->Value(), 1);
 	}
 
-  if (readdata && sizeof(readdata) > 0) {
-    Local<Value> d;
-    node::Buffer* b = node::Buffer::New((char*)readdata, readcount);     
-    Local<Object> globalObj = Context::GetCurrent()->Global();
-    Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(String::New("Buffer")));  
-    Handle<Value> v[] = {b->handle_, Integer::New(readcount), Integer::New(0)};
-    d = bufferConstructor->NewInstance(3, v);
-    return scope.Close(d);
-  } else {
-		return scope.Close(Undefined());
-  } 
+  Local<Value> d;
+  node::Buffer* b = node::Buffer::New((char*)readdata, readcount);     
+  Local<Object> globalObj = Context::GetCurrent()->Global();
+  Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(String::New("Buffer")));  
+  Handle<Value> v[] = {b->handle_, Integer::New(readcount), Integer::New(0)};
+  d = bufferConstructor->NewInstance(3, v);
+  return scope.Close(d);
+
 #else
 	return scope.Close(Undefined());
 #endif
