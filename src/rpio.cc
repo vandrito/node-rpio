@@ -179,6 +179,7 @@ Handle<Value> spiTransfer(const Arguments& args) {
   Local<Object> writebuf = args[0]->ToObject();
   buf = node::Buffer::Data(writebuf);
   memcpy(writedata, buf, readcount);
+  delete buf;
 
   if (!args[2]->IsUndefined()) {
   	if (!args[3]->IsUndefined()) {
