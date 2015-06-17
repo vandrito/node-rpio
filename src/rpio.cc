@@ -179,7 +179,6 @@ Handle<Value> spiTransfer(const Arguments& args) {
   Local<Object> writebuf = args[0]->ToObject();
   buf = node::Buffer::Data(writebuf);
   memcpy(writedata, buf, readcount);
-  if (buf) delete buf;
 
   if (!args[2]->IsUndefined()) {
   	if (!args[3]->IsUndefined()) {
@@ -208,6 +207,7 @@ Handle<Value> spiTransfer(const Arguments& args) {
   Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(String::New("Buffer")));  
   Handle<Value> v[] = {b->handle_, Integer::New(readcount), Integer::New(0)};
   d = bufferConstructor->NewInstance(3, v);
+  
   return scope.Close(d);
 
 #else
