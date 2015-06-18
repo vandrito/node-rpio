@@ -206,8 +206,15 @@ Handle<Value> spiTransfer(const Arguments& args) {
   Local<Object> globalObj = Context::GetCurrent()->Global();
   Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(String::New("Buffer")));  
   Handle<Value> v[] = {b->handle_, Integer::New(readcount), Integer::New(0)};
-  d = bufferConstructor->NewInstance(3, v);
-  
+
+	if (!b->handle_.IsEmpty()) {
+    d = bufferConstructor->NewInstance(3, v);
+    return scope.Close(d);
+  } else {
+		printf("handle empty\n");
+    return scope.Close(Undefined());
+  }
+
   return scope.Close(d);
 
 #else
