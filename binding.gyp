@@ -3,8 +3,7 @@
     {
       "target_name": "rpio",
       'cflags_cc': [
-        '-fpermissive',
-        '-D'
+        '-fpermissive'
       ],
       "sources": [
         "src/bcm2835.cc",
